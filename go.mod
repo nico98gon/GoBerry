@@ -1,4 +1,4 @@
-module api
+module go-berry
 
 go 1.21.6
 

@@ -13,8 +13,24 @@ func ConnectDatabase() (*sql.DB, error) {
 		return nil, err
 	}
 
-	// Create table if it doesn't exist
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT, email TEXT)")
+	_, err = db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"")
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
+		id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+		name TEXT,
+		email TEXT,
+		username TEXT,
+		password TEXT,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		last_login TIMESTAMP,
+		is_active BOOLEAN,
+		groups TEXT[], 
+		metadata JSONB
+	)`)
 	if err != nil {
 		return nil, err
 	}
